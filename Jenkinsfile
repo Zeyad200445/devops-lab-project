@@ -3,7 +3,7 @@ pipeline {
     
     environment {
         // We use 'nexus' because Jenkins is in the same Docker Network
-        NEXUS_URL = 'localhost:5000' 
+        NEXUS_URL = 'nexus:5000' 
         
         // Name of your app image
         IMAGE_NAME = 'my-fintech-app'
