@@ -1,0 +1,43 @@
+services:
+  nexus:
+    image: sonatype/nexus3
+    container_name: nexus
+    ports:
+      - "8081:8081" # Web UI
+      - "5000:5000" # Docker Registry Port (We will configure this later)
+    volumes:
+      - nexus-data:/nexus-data
+    networks:
+      - devops-net
+
+  jenkins:
+    build: ./jenkins-docker # Builds your custom image
+    container_name: jenkins
+    ports:
+      - "8080:8080"
+      - "50000:50000"
+    volumes:
+      - jenkins-data:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock # The "DooD" Magic
+    networks:
+      - devops-net
+
+  # We include the Database here so it's always running
+  postgres-db:
+    image: postgres:13
+    container_name: postgres-db
+    ports:                 # <--- ADD THIS
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+      POSTGRES_DB: mydb
+    networks:
+      - devops-net
+
+volumes:
+  nexus-data:
+  jenkins-data:
+
+networks:
+  devops-net:
